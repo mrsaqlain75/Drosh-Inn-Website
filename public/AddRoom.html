@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Room</title>
+  <style>
+    /* Reset */
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    /* Container */
+    .form-container {
+      max-width: 800px;
+      margin: 50px auto;
+      background-color: #f9f9f9;
+      border-radius: 10px;
+      padding: 20px 30px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .form-container h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      height: 100px;
+    }
+
+    .form-group .image-inputs {
+      display: flex;
+      gap: 10px;
+      justify-content: space-between;
+    }
+
+    .form-group .image-inputs input[type="file"] {
+      width: 100%;
+    }
+
+    .submit-btn {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .submit-btn:hover {
+      background-color: #2980b9;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>Add New Room</h2>
+    <form action="/add-room" method="POST" enctype="multipart/form-data">
+      <!-- Room Name -->
+      <div class="form-group">
+        <label for="room-name">Room Name</label>
+        <input type="text" id="room-name" name="roomName" placeholder="Enter room name" required>
+      </div>
+
+      <!-- Room Type -->
+      <div class="form-group">
+        <label for="room-type">Room Type</label>
+        <select id="room-type" name="roomType" required>
+          <option value="" disabled selected>Select type</option>
+          <option value="single">Single</option>
+          <option value="double">Double</option>
+          <option value="suite">Suite</option>
+        </select>
+      </div>
+
+      <!-- Room Price -->
+      <div class="form-group">
+        <label for="price">Price (per night)</label>
+        <input type="number" id="price" name="price" placeholder="Enter price in PKR" required>
+      </div>
+
+      <!-- Room Description -->
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="description" name="description" placeholder="Write a brief description of the room..." required></textarea>
+      </div>
+
+      <!-- Room Availability -->
+      <div class="form-group">
+        <label for="availability">Availability</label>
+        <select id="availability" name="availability" required>
+          <option value="" disabled selected>Select availability</option>
+          <option value="available">Available</option>
+          <option value="booked">Booked</option>
+          <option value="maintenance">Under Maintenance</option>
+        </select>
+      </div>
+
+      <!-- Room Images -->
+      <div class="form-group">
+        <div class="form-group">
+            <label>Upload Images (3 required)</label>
+            <div class="image-inputs">
+              <input type="file" name="images" accept="image/*" required>
+              <input type="file" name="images" accept="image/*" required>
+              <input type="file" name="images" accept="image/*" required>
+            </div>
+          </div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="submit-btn">Add Room</button>
+    </form>
+  </div>
+</body>
+<script>
+    // Select the form
+const form = document.querySelector('form');
+
+// Add event listener to handle form submission
+form.addEventListener('submit', async (event) => {
+  event.preventDefault(); // Prevent default form submission
+
+  // Create a FormData object to hold form data
+  const formData = new FormData(form);
+
+  // Log the form data for debugging (optional)
+  console.log("Form Data Submitted:");
+  for (let [key, value] of formData.entries()) {
+    console.log(`${key}: ${value}`);
+  }
+
+  // Send a POST request to the server
+  try {
+    const response = await fetch('/add-room', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (response.ok) {
+      const result = await response.json(); // Assuming the server sends JSON
+      alert('Room added successfully!');
+      console.log(result); // Log the server response
+    } else {
+      throw new Error('Failed to add room');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('There was an error adding the room. Please try again.');
+  }
+});
+
+</script>
+</html>

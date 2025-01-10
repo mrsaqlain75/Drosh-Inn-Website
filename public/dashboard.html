@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hotel Dashboard</title>
+  <style>
+    /* Reset */
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    /* Container */
+    .dashboard-container {
+      display: flex;
+      height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      background-color: #2c3e50;
+      color: #ecf0f1;
+      display: flex;
+      flex-direction: column;
+      padding: 20px 0;
+    }
+
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .sidebar a {
+      text-decoration: none;
+      color: #ecf0f1;
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: background-color 0.3s;
+    }
+
+    .sidebar a:hover {
+      background-color: #34495e;
+    }
+
+    .sidebar i {
+      font-size: 1.2em;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex-grow: 1;
+      background-color: #f4f4f9;
+      padding: 20px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .header h1 {
+      margin: 0;
+    }
+
+    .add-room-btn {
+      background-color: #3498db;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .add-room-btn:hover {
+      background-color: #2980b9;
+    }
+
+    /* Room Grid */
+    .room-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .room-card {
+      background-color: white;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      padding: 15px;
+      text-align: center;
+      position: relative;
+    }
+
+    .room-card h3 {
+      margin: 10px 0;
+    }
+
+    .room-card p {
+      color: #7f8c8d;
+    }
+
+    .room-card button {
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .room-card button:hover {
+      background-color: #c0392b;
+    }
+
+    /* Delete Icon */
+    .delete-icon {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+      color: #e74c3c;
+      font-size: 1.5em;
+      transition: color 0.3s;
+    }
+
+    .delete-icon:hover {
+      color: #c0392b;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <h2>Dashboard</h2>
+      <a href="#"><i>🛏️</i>Rooms</a>
+      <a href="#"><i>📊</i>Bookings</a>
+      <a href="#"><i>⚙️</i>Settings</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="header">
+        <h1>Manage Rooms</h1>
+        <button id="addroom" class="add-room-btn">Add Room</button>
+      </div>
+      <div class="room-grid" id="room-grid">
+        <!-- Room Cards will be dynamically loaded here -->
+      </div>
+    </div>
+  </div>
+</body>
+<script>
+  // Redirect to Add Room page
+  document.getElementById('addroom').addEventListener('click', () => {
+    location.href = "AddRoom.html";
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const roomGrid = document.getElementById('room-grid');
+
+    async function loadRooms() {
+      try {
+        const response = await fetch('/show-rooms');
+        const rooms = await response.json();
+        console.log(rooms);
+
+        roomGrid.innerHTML = rooms
+          .map(
+            (room) => `
+            <div class="room-card">
+              <img style="width: 90%" src="${room.images[0]}" alt="${room.roomName}" style="width: 100%; border-radius: 10px;" />
+              <h3>${room.roomName}</h3>
+              <p>Type: ${room.roomType}</p>
+              <p>Status: 
+                <select data-id="${room._id}" class="status-dropdown">
+                  <option value="Available" ${room.status === 'Available' ? 'selected' : ''}>Available</option>
+                  <option value="Booked" ${room.status === 'Booked' ? 'selected' : ''}>Booked</option>
+                  <option value="Maintenance" ${room.status === 'Maintenance' ? 'selected' : ''}>Maintenance</option>
+                </select>
+              </p>
+              <span class="delete-icon" data-id="${room._id}">&#10006;</span>
+            </div>
+          `
+          )
+          .join('');
+
+        // Add event listener to each status dropdown
+        const statusDropdowns = document.querySelectorAll('.status-dropdown');
+        statusDropdowns.forEach((dropdown) => {
+          dropdown.addEventListener('change', async (e) => {
+            const roomId = e.target.dataset.id; // Get the room ID
+            const newStatus = e.target.value; // Get the new status
+            await changeStatus(roomId, newStatus); // Call the function to update the status
+          });
+        });
+
+        // Add event listener to each delete icon
+        const deleteIcons = document.querySelectorAll('.delete-icon');
+        deleteIcons.forEach((icon) => {
+          icon.addEventListener('click', async (e) => {
+            const roomId = e.target.dataset.id; // Get the room ID
+            await deleteRoom(roomId); // Call the function to delete the room
+            loadRooms(); // Reload the rooms after deletion
+          });
+        });
+
+      } catch (error) {
+        console.error('Error loading rooms:', error);
+      }
+    }
+
+    // Load rooms on page load
+    loadRooms();
+
+    // Function to update room status
+    async function changeStatus(roomId, newStatus) {
+      try {
+        const response = await fetch(`/update-status/${roomId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ status: newStatus }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to update status');
+        }
+        console.log('Status updated successfully');
+      } catch (error) {
+        console.error('Error updating status:', error);
+      }
+    }
+
+    // Function to delete room
+    async function deleteRoom(roomId) {
+      try {
+        const response = await fetch(`/delete-room/${roomId}`, {
+          method: 'DELETE',
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to delete room');
+        }
+        console.log('Room deleted successfully');
+      } catch (error) {
+        console.error('Error deleting room:', error);
+      }
+    }
+  });
+</script>
+</html>

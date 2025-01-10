@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drosh Inn Home</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+</head>
+<body>
+    <div id="hero" class="hero-section">
+      <div id="hamburger-menu">
+        <div class="row">
+          <img src="Images/logo-white.png" alt="">
+        <button class="hamburger-button"> ☰ </button>
+      </div>
+        <div class="nav-links">
+            <a href="#">Home</a>
+            <a href="#">Rooms</a>
+            <a href="#">Contact</a>
+            <a href="#">About</a>
+            <div class="mob-socials">
+              <a href=""><i class="fa-brands fa-square-facebook"></i></a>
+              <a href=""><i class="fa-brands fa-x-twitter"></i></a>
+              <a href=""><i class="fa-brands fa-square-instagram"></i></a>
+              <a class="book" href="" id="btn">Book a Room</a>
+          </div>
+        </div>
+
+     </div>
+        <div class="header">
+            <div class="nav">
+                <a href="">Home</a>
+                <a href="">Rooms</a>
+                <a href="">Contact</a>
+                <a href="">About</a>
+            </div>
+            <div class="logo">
+                <img src="Images/logo-white.png" alt="Drosh Inn Logo">
+            </div>
+            <div class="socials">
+                <a href=""><i class="fa-brands fa-square-facebook"></i></a>
+                <a href=""><i class="fa-brands fa-x-twitter"></i></a>
+                <a href=""><i class="fa-brands fa-square-instagram"></i></a>
+                <a class="book" href="" id="btn">Book a Room</a>
+            </div>
+        </div>
+        <div class="text">
+            <span style="text-align: center;">We are <br><span style="font-size: 80px;" id="dynamic-text">Hospital</span>.</span>
+        </div>
+
+    </div>
+    <div class="misc-box">
+      <div class="misc-boxx misc1">
+        <span>Need a Room?</span>
+        <button>Book a Room</button>
+      </div>
+      <div style="width: 90%; height: 2px; background-color: lightgrey;" class="line"></div>
+      <div class="misc-boxx misc2">
+        <span>Have any Query?</span>
+        <button>+9233434234</button>
+      </div>
+    </div>
+    <section class="about">
+      <div class="left-about">
+        <span class="about-head">A Luxuries Hotel with Nature</span>
+        <span class="about-desc">Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos, quisquam debitis. In fugiat, sunt sed aspernatur, modi quisquam eius laboriosam vitae iusto quo exercitationem veniam id ex et. Quas, similique.</span>
+        <a href="">Learn More</a>
+      </div>
+      <div class="right-about">
+        <img class="img1 img" src="https://preview.colorlib.com/theme/montana/img/about/about_1.png.webp" alt="">
+        <img class="img2 img" src="https://preview.colorlib.com/theme/montana/img/about/about_2.png.webp" alt="">
+      </div>
+    </section>
+    <section class="amenties">
+      <div class="left-amenties">
+        <div class="box box1">
+          <i class="fa-solid fa-wifi"></i>
+          <span>Amenty 1</span>
+        </div>
+        <div class="box box1">
+          <i class="fa-solid fa-wifi"></i>
+          <span>Amenty 2</span>
+        </div>        <div class="box box1">
+          <i class="fa-solid fa-wifi"></i>
+          <span>Amenty 3</span>
+        </div>        <div class="box box1">
+          <i class="fa-solid fa-wifi"></i>
+          <span>Amenty 4</span>
+        </div>        <div class="box box1">
+          <i class="fa-solid fa-wifi"></i>
+          <span>Amenty 5</span>
+        </div>        <div class="box box1">
+          <i class="fa-solid fa-wifi"></i>
+          <span>Amenty 6</span>
+        </div>
+      </div>
+      <div class="right-amenties">
+        <span class="amenties-head">Amenties</span>
+        <span class="amenties-desc">Customer's satisfaction is the prime priority of our resort. That is why, Drosh Inn guest House is full of modern neceassities. Few of them are mentioned here. </span>
+      </div>
+    </section>
+
+    <div class="gallery-container">
+      <h2 class="gallery-title">Hotel Gallery</h2>
+      <div class="gallery">
+        <div class="gallery-item"><img src="https://via.placeholder.com/300x200" alt="Sample Image 1"></div>
+        <div class="gallery-item"><img src="https://via.placeholder.com/300x200" alt="Sample Image 2"></div>
+        <div class="gallery-item"><img src="https://via.placeholder.com/300x200" alt="Sample Image 3"></div>
+        <div class="gallery-item"><img src="https://via.placeholder.com/300x200" alt="Sample Image 4"></div>
+        <div class="gallery-item"><img src="https://via.placeholder.com/300x200" alt="Sample Image 5"></div>
+        <div class="gallery-item"><img src="https://via.placeholder.com/300x200" alt="Sample Image 6"></div>
+        <div class="gallery-item"><img src="https://via.placeholder.com/300x200" alt="Sample Image 7"></div>
+        <div class="gallery-item"><img src="https://via.placeholder.com/300x200" alt="Sample Image 8"></div>
+      </div>
+    </div>
+
+    <footer>
+      <span>All Rights Reserved @Copyright Drosh Inn Guest House</span>
+    </footer>
+</body>
+<script src="index.js"></script>
+<script>
+
+document.querySelector('.hamburger-button').addEventListener('click', function() {
+   document.querySelector('.nav-links').style.display = 
+   (document.querySelector('.nav-links').style.display == 'none') ? 'block' : 'none';
+});
+
+    //handling the dynamic text in the hero-section:
+    function changeData(){
+  txt.style.opacity = 0;
+setTimeout(function(){
+  switch(text){
+    case "Hospital":
+      text = "Beautiful";
+      break;
+    case "Beautiful":
+      text = "Respectful";
+      break;
+    case "Respectful":
+      text = "Cultural";
+      break;
+    case "Cultural":
+      text = "Hospital";
+  }
+  txt.innerText= " "+text;
+  txt.style.opacity = 1;
+},500);
+}
+
+const txt = document.getElementById("dynamic-text");
+var text = txt.innerText;
+setInterval(changeData,2000);
+</script>
+
+</html>
