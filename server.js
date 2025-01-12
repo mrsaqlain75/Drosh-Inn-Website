@@ -6,7 +6,7 @@ const fs = require('fs');
 const path = require('path');
 
 const app = express();
-const port = 2500;
+const port = process.env.PORT || 2500;
 const url = "mongodb://localhost:27017/";
 
 // Ensure uploads directory exists
