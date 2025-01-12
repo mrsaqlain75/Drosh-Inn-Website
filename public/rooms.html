@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drosh Inn Rooms</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="rooms.css">
+    <style>
+        .room-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 10px;
+            padding: 10px;
+            border: 2px solid #ccc; /* Default border color */
+        }
+
+        .room-card img {
+            width: 90%;
+            margin-top: 0;
+        }
+
+        .room-card-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            width: 100%;
+            text-align: center;
+        }
+
+        .room-card h3 {
+            font-weight: bold;
+        }
+
+        .room-card p {
+            margin: 5px 0;
+        }
+
+        .room-card p.availability {
+            font-weight: bold;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+  <div id="hero" class="hero-section">
+    <div id="hamburger-menu">
+      <div class="row">
+        <img src="Images/logo-white.png" alt="">
+      <button class="hamburger-button"> ☰ </button>
+    </div>
+      <div class="nav-links">
+          <a href="index.html">Home</a>
+          <a href="rooms.html">Rooms</a>
+          <a href="#">Contact</a>
+          <a href="#">About</a>
+          <div class="mob-socials">
+            <a href=""><i class="fa-brands fa-square-facebook"></i></a>
+            <a href=""><i class="fa-brands fa-x-twitter"></i></a>
+            <a href=""><i class="fa-brands fa-square-instagram"></i></a>
+            <a class="book" href="book-now.html" id="btn">Book a Room</a>
+        </div>
+      </div>
+
+   </div>
+      <div class="header">
+          <div class="nav">
+              <a href="index.html">Home</a>
+              <a href="rooms.html" style="border-bottom: 2px solid #efefef;">Rooms</a>
+              <a href="">Contact</a>
+              <a href="">About</a>
+          </div>
+          <div class="logo">
+              <img src="Images/logo-white.png" alt="Drosh Inn Logo">
+          </div>
+          <div class="socials">
+              <a href=""><i class="fa-brands fa-square-facebook"></i></a>
+              <a href=""><i class="fa-brands fa-x-twitter"></i></a>
+              <a href=""><i class="fa-brands fa-square-instagram"></i></a>
+              <a class="book" href="book-now.html" id="btn">Book a Room</a>
+          </div>
+      </div>
+      <div class="text">
+          <span style="text-align: center;">See our Rooms.</span>
+      </div>
+
+  </div>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <div class="room-grid" id="room-grid">
+          <!-- Room Cards will be dynamically loaded here -->
+        </div>
+      </div>
+  
+  <footer>
+    <span>All Rights Reserved @Copyright Drosh Inn Guest House</span>
+  </footer>
+</body>
+<script src="index.js"></script>
+<script>
+
+// Toggle navigation menu
+document.querySelector('.hamburger-button').addEventListener('click', function() {
+ document.querySelector('.nav-links').style.display = 
+ (document.querySelector('.nav-links').style.display == 'none') ? 'block' : 'none';
+});
+
+// Load rooms dynamically
+document.addEventListener('DOMContentLoaded', () => {
+  const roomGrid = document.getElementById('room-grid');
+
+  async function loadRooms() {
+    try {
+      const response = await fetch('/show-rooms');
+      const rooms = await response.json();
+      console.log(rooms);
+
+      roomGrid.innerHTML = rooms
+        .map((room) => {
+          // Determine box shadow color based on availability
+          let boxShadowColor;
+          let textColor;
+          if (room.availability === 'Available') {
+            boxShadowColor = '2px solid #7cff8d';
+            textColor = "#7cff8d";
+          } else if (room.availability === 'Booked') {
+            boxShadowColor = '2px solid rgb(255, 116, 116)';
+            textColor = 'rgb(255, 116, 116)';
+          } else if (room.availability === 'Maintenance') {
+            boxShadowColor = '2px solid #7edfff';
+            textColor = '#7edfff';
+          } else {
+            boxShadowColor = 'none';
+            textColor = "none";
+          }
+
+          return `
+            <div id="room-card" class="room-card" style="border: ${boxShadowColor}; border-radius: 10px; padding: 10px; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; cursor: pointer;" onclick="redirectToDetails('${room._id}')">
+              <img style="width: 90%; margin-top: auto;" src="${room.images[0]}" alt="${room.roomName}" />
+              <h3 style="font-weight: bold;">${room.roomName}</h3>
+              <p>Type: ${room.roomType}</p>
+              <p style="color: ${textColor}; font-weight: bold; font-size: 24px;">${room.availability}</p>
+            </div>
+          `;
+        })
+        .join('');
+    } catch (error) {
+      console.error('Error loading rooms:', error);
+    }
+  }
+
+  loadRooms();
+
+  // Redirect function
+  window.redirectToDetails = function(id) {
+      window.location.href = `room-details.html?id=${id}`;
+  };
+});
+    
+</script>
+
+</html>

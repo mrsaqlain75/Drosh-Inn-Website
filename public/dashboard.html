@@ -121,7 +121,26 @@
     .room-card button:hover {
       background-color: #c0392b;
     }
-
+    .booking-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .booking-card {
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+    }
+    .booking-card h3 {
+      margin: 0;
+      color: #333;
+    }
+    .booking-card p {
+      margin: 5px 0;
+      color: #555;
+    }
     /* Delete Icon */
     .delete-icon {
       position: absolute;
@@ -143,17 +162,21 @@
     <!-- Sidebar -->
     <div class="sidebar">
       <h2>Dashboard</h2>
-      <a href="#"><i>🛏️</i>Rooms</a>
-      <a href="#"><i>📊</i>Bookings</a>
-      <a href="#"><i>⚙️</i>Settings</a>
+      <a href="#" id="rooms-link"><i>🛏️</i>Rooms</a>
+      <a href="#" id="bookings-link"><i>📊</i>Bookings</a>
     </div>
 
     <!-- Main Content -->
     <div class="main-content">
-      <div class="header">
-        <h1>Manage Rooms</h1>
+
+      <div class="header" >
+        <h1 id="title">Manage Rooms</h1>
         <button id="addroom" class="add-room-btn">Add Room</button>
       </div>
+      <div id="booking-container" class="booking-container">
+        <!-- Bookings will be inserted here dynamically -->
+      </div>
+      
       <div class="room-grid" id="room-grid">
         <!-- Room Cards will be dynamically loaded here -->
       </div>
@@ -161,6 +184,7 @@
   </div>
 </body>
 <script>
+  document.getElementById('booking-container');
   // Redirect to Add Room page
   document.getElementById('addroom').addEventListener('click', () => {
     location.href = "AddRoom.html";
@@ -176,24 +200,24 @@
         console.log(rooms);
 
         roomGrid.innerHTML = rooms
-          .map(
-            (room) => `
-            <div class="room-card">
-              <img style="width: 90%" src="${room.images[0]}" alt="${room.roomName}" style="width: 100%; border-radius: 10px;" />
-              <h3>${room.roomName}</h3>
-              <p>Type: ${room.roomType}</p>
-              <p>Status: 
-                <select data-id="${room._id}" class="status-dropdown">
-                  <option value="Available" ${room.status === 'Available' ? 'selected' : ''}>Available</option>
-                  <option value="Booked" ${room.status === 'Booked' ? 'selected' : ''}>Booked</option>
-                  <option value="Maintenance" ${room.status === 'Maintenance' ? 'selected' : ''}>Maintenance</option>
-                </select>
-              </p>
-              <span class="delete-icon" data-id="${room._id}">&#10006;</span>
-            </div>
-          `
-          )
-          .join('');
+  .map(
+    (room) => `
+      <div id="" class="room-card">
+        <img style="width: 90%" src="${room.images[0]}" alt="${room.roomName}" style="width: 100%; border-radius: 10px;" />
+        <h3>${room.roomName}</h3>
+        <p>Type: ${room.roomType}</p>
+        <p>Status: 
+          <select data-id="${room._id}" class="status-dropdown">
+            <option value="Available" ${room.availability === 'Available' ? 'selected' : ''}>Available</option>
+            <option value="Booked" ${room.availability === 'Booked' ? 'selected' : ''}>Booked</option>
+            <option value="Maintenance" ${room.availability === 'Maintenance' ? 'selected' : ''}>Maintenance</option>
+          </select>
+        </p>
+        <span class="delete-icon" data-id="${room._id}">&#10006;</span>
+      </div>
+    `
+  )
+  .join('');
 
         // Add event listener to each status dropdown
         const statusDropdowns = document.querySelectorAll('.status-dropdown');
@@ -220,9 +244,11 @@
       }
     }
 
+    document.getElementById('rooms-link').addEventListener('click', ()=>{
     // Load rooms on page load
+    location.reload();
+    });
     loadRooms();
-
     // Function to update room status
     async function changeStatus(roomId, newStatus) {
       try {
@@ -259,5 +285,52 @@
       }
     }
   });
+
+
+  //Bookings Code: 
+  document.getElementById('bookings-link').addEventListener('click',async()=>{
+    document.getElementById('room-grid').style.display = "none";
+    document.getElementById('title').innerText = "Bookings List";
+    document.getElementById('addroom').style.display = "none";
+    fetchBookings();
+  });
+  async function fetchBookings(){
+    try {
+        const response = await fetch('/all-bookings');
+        const bookings = await response.json();
+
+        // Get the booking container element
+        const bookingContainer = document.getElementById('booking-container');
+        
+        // Clear any existing content in the container
+        bookingContainer.innerHTML = '';
+
+        // Loop through each booking and create a card
+        bookings.forEach(booking => {
+          const bookingCard = document.createElement('div');
+          bookingCard.classList.add('booking-card');
+
+          // Create elements for booking details
+          bookingCard.innerHTML = `
+            <h3>${booking.name}</h3>
+            <p><strong>Email:</strong> ${booking.email}</p>
+            <p><strong>Phone:</strong> ${booking.phone}</p>
+            <p><strong>Room Name:</strong> ${booking.roomName}</p>
+            <p><strong>Check-in:</strong> ${new Date(booking.checkin).toLocaleDateString()}</p>
+            <p><strong>Check-out:</strong> ${new Date(booking.checkout).toLocaleDateString()}</p>
+            <p><strong>Total Price:</strong> $${booking.totalPrice.toFixed(2)}</p>
+            <p><strong>Notes:</strong> ${booking.notes || 'No notes provided'}</p>
+          `;
+
+          // Append the booking card to the container
+          bookingContainer.appendChild(bookingCard);
+        });
+      } catch (error) {
+        console.error('Error fetching bookings:', error);
+        alert('Error fetching bookings.');
+      }
+
+  }
 </script>
 </html>
+ 

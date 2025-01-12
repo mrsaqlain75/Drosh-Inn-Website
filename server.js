@@ -162,6 +162,89 @@ app.delete('/delete-room/:id', async (req, res) => {
   }
 });
 
+// Route to handle booking submissions
+app.post('/submit-booking', async (req, res) => {
+  const client = new MongoClient(url);
+  try {
+    await client.connect();
+    const db = client.db('DroshInn');
+
+    const {
+      name,
+      email,
+      phone,
+      checkin,
+      checkout,
+      roomName,
+      notes,
+      totalPrice
+    } = req.body;
+
+    // Insert booking into the "Bookings" collection
+    const bookingsCollection = db.collection('Bookings');
+    await bookingsCollection.insertOne({
+      name,
+      email,
+      phone,
+      checkin: new Date(checkin),
+      checkout: new Date(checkout),
+      roomName,
+      notes: notes || '',
+      totalPrice: parseFloat(totalPrice),
+      bookingDate: new Date(), // Track when the booking was made
+    });
+    // Respond with a JSON object
+    res.status(200).json({
+      message: 'Booking successfully saved.',
+      bookingDetails: { name, email, phone, roomName, totalPrice } // Add any relevant details
+    });
+  } catch (error) {
+    console.error('Error saving booking:', error);
+    res.status(500).send('An error occurred while saving the booking.');
+  } finally {
+    await client.close();
+  }
+});
+
+// Route to fetch all bookings
+app.get('/all-bookings', async (req, res) => {
+  const client = new MongoClient(url);
+  try {
+    await client.connect();
+    const db = client.db('DroshInn');
+
+    // Fetch all bookings from the "Bookings" collection
+    const bookingsCollection = db.collection('Bookings');
+    const bookings = await bookingsCollection.find().toArray(); // Fetch all documents
+
+    // Send the bookings as JSON
+    res.status(200).json(bookings);
+  } catch (error) {
+    console.error('Error fetching bookings:', error);
+    res.status(500).json({ message: 'An error occurred while fetching bookings.' });
+  } finally {
+    await client.close();
+  }
+});
+
+// Route to delete a booking by ID
+app.delete('/delete-booking/:id', async (req, res) => {
+  try {
+    const bookingId = req.params.id;
+    const result = await db.collection('Bookings').deleteOne({ _id: ObjectId(bookingId) });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: 'Booking not found' });
+    }
+
+    res.status(200).json({ message: 'Booking deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting booking:', error);
+    res.status(500).json({ message: 'Failed to delete booking' });
+  }
+});
+
+
 // Start server
 app.listen(port, () => {
   console.log(`Server running at http://127.0.0.1:${port}`);
