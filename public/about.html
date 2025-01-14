@@ -3,9 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Room Details</title>
+    <title>About Drosh Inn</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="room-details.css">
+    <style>
+        .container {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 20px;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+    .section {
+      margin-bottom: 20px;
+    }
+    .section h2 {
+      font-size: 1.8rem;
+      color: #333;
+      margin-bottom: 10px;
+      border-bottom: 2px solid #f76c6c;
+      display: inline-block;
+      padding-bottom: 5px;
+    }
+    .section p {
+      font-size: 1rem;
+      color: #555;
+      margin: 0 0 10px;
+    }
+    .section ul {
+      list-style: none;
+      padding: 0;
+    }
+    .section ul li {
+      margin: 5px 0;
+      color: #555;
+    }
+    @media (max-width: 768px) {
+      .container {
+        padding: 15px;
+      }
+      .section h2 {
+        font-size: 1.5rem;
+      }
+      .section p {
+        font-size: 0.9rem;
+      }
+    }
+    </style>
 </head>
 <body>
   <div id="hero" class="hero-section">
@@ -31,9 +76,9 @@
       <div class="header">
           <div class="nav">
               <a href="index.html">Home</a>
-              <a href="rooms.html" style="border-bottom: 2px solid #efefef;">Rooms</a>
+              <a href="rooms.html">Rooms</a>
               <a href="contact.html">Contact</a>
-              <a href="about.html">About</a>
+              <a href="about.html" style="border-bottom: 2px solid #efefef;">About</a>
           </div>
           <div class="logo">
               <img src="Images/logo-white.png" alt="Drosh Inn Logo">
@@ -46,15 +91,40 @@
           </div>
       </div>
       <div class="text">
-          <span style="text-align: center;">Room Details</span>
+          <span style="text-align: center;">About Us</span>
       </div>
 
   </div>
 
-      <!-- Main Content -->
-      <div id="main-content" class="main-content">
-        <!--Room Details shall appear here-->
-      </div>
+  <div class="container">
+    <!-- About Us Section -->
+    <div class="section">
+      <h2>About Us</h2>
+      <p>We are a <strong>[type of organization]</strong> dedicated to <strong>[mission]</strong>.</p>
+    </div>
+
+    <!-- History Section -->
+    <div class="section">
+      <h2>Our History</h2>
+      <p>Since <strong>[year]</strong>, we've been...</p>
+    </div>
+
+    <!-- What We Do Section -->
+    <div class="section">
+      <h2>What We Do</h2>
+      <p>We provide <strong>[services/products]</strong> to <strong>[target audience]</strong>.</p>
+    </div>
+
+    <!-- Why Choose Us Section -->
+    <div class="section">
+      <h2>Why Choose Us</h2>
+      <ul>
+        <li>Here’s what makes us different...</li>
+        <li>Unique feature or quality #1</li>
+        <li>Unique feature or quality #2</li>
+      </ul>
+    </div>
+  </div>
   
   <footer>
     <span>All Rights Reserved @Copyright Drosh Inn Guest House</span>
@@ -68,51 +138,6 @@ document.querySelector('.hamburger-button').addEventListener('click', function()
  document.querySelector('.nav-links').style.display = 
  (document.querySelector('.nav-links').style.display == 'none') ? 'block' : 'none';
 });
-
-// Load rooms dynamically
-document.addEventListener('DOMContentLoaded', () => {
-  const roomGrid = document.getElementById('room-grid');
-
-  async function loadRoom() {
-    try {
-      const response = await fetch('/show-rooms');
-      const rooms = await response.json();
-      console.log(rooms);
-
-
-    const roomId = new URLSearchParams(window.location.search).get('id');
-
-    rooms.forEach(room => {
-        if(room._id === roomId){
-            const mainContent = document.getElementById('main-content');
-            mainContent.innerHTML = `
-            <span class="h1">${room.roomName}</span>
-            <span><b>Room Type:</b> ${room.roomType}</span>
-            <span><b>Room Description:</b> ${room.description}</span>
-            <span><b>Per Night Price:</b> <span class="price">PKR ${room.price}</span></span>
-            <a href="book-now.html">Book Now</a>
-            <div class="image-container">
-            <h1>Room Pictures</h1>
-            <img src="${room.images[0]}" alt="${room.roomName}">
-            <img src="${room.images[1]}" alt="${room.roomName}">
-            <img src="${room.images[2]}" alt="${room.roomName}">
-            </div>
-            `;
-        }        
-    });
-    } catch (error) {
-      console.error('Error loading rooms:', error);
-    }
-  }
-
-  loadRoom();
-
-  // Redirect function
-  window.redirectToDetails = function(id) {
-      window.location.href = `room-details.html?id=${id}`;
-  };
-});
-    
-</script>
+    </script>
 
 </html>

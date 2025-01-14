@@ -77,13 +77,13 @@
       <div class="nav-links">
           <a href="index.html">Home</a>
           <a href="rooms.html">Rooms</a>
-          <a href="#">Contact</a>
-          <a href="#">About</a>
+          <a href="contact.html">Contact</a>
+          <a href="about.html">About</a>
           <div class="mob-socials">
-            <a href=""><i class="fa-brands fa-square-facebook"></i></a>
+            <a href="https://www.facebook.com/profile.php?id=100094578516159"><i class="fa-brands fa-square-facebook"></i></a>
             <a href=""><i class="fa-brands fa-x-twitter"></i></a>
-            <a href=""><i class="fa-brands fa-square-instagram"></i></a>
-            <a class="book" href="#" id="btn">Book a Room</a>
+            <a href="https://www.instagram.com/droshinn_guesthouse?igsh=MXN6NzczNGF1OTZxbA=="><i class="fa-brands fa-square-instagram"></i></a>
+            <a class="book" href="book-now.html" id="btn">Book a Room</a>
         </div>
       </div>
    </div>
@@ -91,17 +91,17 @@
           <div class="nav">
               <a href="index.html">Home</a>
               <a href="rooms.html" style="border-bottom: 2px solid #efefef;">Rooms</a>
-              <a href="">Contact</a>
-              <a href="">About</a>
+              <a href="contact.html">Contact</a>
+              <a href="about.html">About</a>
           </div>
           <div class="logo">
               <img src="Images/logo-white.png" alt="Drosh Inn Logo">
           </div>
           <div class="socials">
-              <a href=""><i class="fa-brands fa-square-facebook"></i></a>
-              <a href=""><i class="fa-brands fa-x-twitter"></i></a>
-              <a href=""><i class="fa-brands fa-square-instagram"></i></a>
-              <a class="book" href="#" id="btn">Book a Room</a>
+            <a href="https://www.facebook.com/profile.php?id=100094578516159"><i class="fa-brands fa-square-facebook"></i></a>
+            <a href=""><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="https://www.instagram.com/droshinn_guesthouse?igsh=MXN6NzczNGF1OTZxbA=="><i class="fa-brands fa-square-instagram"></i></a>
+            <a class="book" href="book-now.html" id="btn">Book a Room</a>
           </div>
       </div>
       <div class="text">
@@ -217,6 +217,33 @@ form.addEventListener('submit', async function (event) {
             alert(`Booking Successful! Booking ID: ${result.bookingId}`);
             resetForm();  // Reset the form after successful submission
             document.getElementById('sub-btn').innerText="Submitted";
+            const respons = await fetch('/email-to-jawad',{
+                method : 'POST',
+                headers : {'Content-Type':'application/json'},
+                body : JSON.stringify({data})
+            });
+            const res = await respons.json();
+            if(res.success){
+                alert(res.message);
+            }
+            else{
+                alert("Could not send email" + res.message);
+            }
+/*
+            const respon = await fetch('/email-to-customer',{
+                method : 'POST',
+                headers : {'Content-Type':'application/json'},
+                body : JSON.stringify({data})
+            });
+            const re = await respon.json();
+            if(res.success){
+                alert(res.message);
+            }
+            else{
+                alert("Could not send email" + res.message);
+            }
+                */
+            
         } else {
             alert('Failed to submit the booking. Please try again.');
         }

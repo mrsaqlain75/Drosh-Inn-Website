@@ -21,11 +21,11 @@ body {
     padding-block: 4vh;
     background-image:
         linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0)),
-        url('https://preview.colorlib.com/theme/montana/img/banner/banner.png.webp');
+        url('Images/bg1.png');
     background-size: cover;
     background-position: center;
     transition: background-image 2s ease-in-out;
-    animation: slideBackground 6s infinite;
+    animation: slideBackground 10s infinite;
     position: relative;
     overflow: hidden;
     display: flex;
@@ -37,19 +37,19 @@ body {
     0% {
         background-image:
             linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0)),
-            url('https://preview.colorlib.com/theme/montana/img/banner/banner.png.webp');
+            url('Images/bg1.png');
         background-position: 0% center;
     }
     50% {
         background-image:
             linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0)),
-            url('https://preview.colorlib.com/theme/montana/img/banner/banner2.png.webp');
+            url('Images/bg2.png');
         background-position: 100% center;  /* This creates the slide effect */
     }
     100% {
         background-image:
             linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0)),
-            url('https://preview.colorlib.com/theme/montana/img/banner/banner.png.webp');
+            url('Images/bg1.png');
         background-position: 0% center;
     }
 }

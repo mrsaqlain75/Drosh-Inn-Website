@@ -4,6 +4,7 @@ const { MongoClient, ObjectId } = require('mongodb');
 const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
+const nodemailer = require('nodemailer');
 
 const app = express();
 const port = process.env.PORT || 2500;
@@ -32,6 +33,137 @@ const storage = multer.diskStorage({
   },
 });
 const upload = multer({ storage: storage });
+
+
+app.post('/email-to-customer', async (req, res) => {
+  const {
+    name,
+    email
+} = req.body;
+
+  
+  try {
+    // Setting up Nodemailer
+    const transporter = nodemailer.createTransport({
+        host: 'mail.privateemail.com', // Outgoing server from your settings
+        port: 465, // Port for SSL
+        secure: true, // Use SSL
+        auth: {
+            user: 'team@droshinn.com', // Your domain email
+            pass: 'Jawad@1122', // Password for your email
+        }
+    });
+
+            // Sending the email
+            await transporter.sendMail({
+              from: 'team@droshinn.com',
+              to: email, // Sending to the hotel team
+              subject: 'Response to Booking in Drosh Inn',
+              html: `<p> Hi Mr/Ms ${name},</p>
+              <p>We have received your booking request.</p>
+              <p>Within 24 hours you will get a confirmation call from our officials.</p>
+              <p>Please confirm your booking to them.</p>
+              <p>Thank You for choosing us.</p>
+              <p>Our eyes are on the doors.</p>`
+          });
+          console.log("Email sent");
+  
+          res.json({ success: true, message: 'Booking email sent successfully.' });
+      } catch (error) {
+          console.error('Error sending email:', error);
+          res.status(500).json({ success: false, message: 'Error sending booking email.' });
+      }
+});
+
+app.post('/email-to-jawad', async (req, res) => {
+    const {
+        name,
+        email,
+        phone,
+        checkin,
+        checkout,
+        roomName,
+        notes,
+        totalPrice
+    } = req.body;
+
+    try {
+        // Setting up Nodemailer
+        const transporter = nodemailer.createTransport({
+            host: 'mail.privateemail.com', // Outgoing server from your settings
+            port: 465, // Port for SSL
+            secure: true, // Use SSL
+            auth: {
+                user: 'team@droshinn.com', // Your domain email
+                pass: 'Jawad@1122', // Password for your email
+            },
+            debug: true // Enable debug logs
+        });
+
+        // Cool layout for the email content
+        const emailContent = `
+        <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+            <h2 style="color: #4CAF50;">New Booking Request</h2>
+            <p>A customer has applied for booking a room. Here are the details:</p>
+            <table style="border-collapse: collapse; width: 100%; margin: 20px 0;">
+                <tr style="background-color: #f2f2f2;">
+                    <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Field</th>
+                    <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Details</th>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #ddd; padding: 8px;">Customer Name</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">${name}</td>
+                </tr>
+                <tr style="background-color: #f9f9f9;">
+                    <td style="border: 1px solid #ddd; padding: 8px;">Email</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">${email}</td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #ddd; padding: 8px;">Phone</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">${phone}</td>
+                </tr>
+                <tr style="background-color: #f9f9f9;">
+                    <td style="border: 1px solid #ddd; padding: 8px;">Check-in Date</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">${checkin}</td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #ddd; padding: 8px;">Check-out Date</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">${checkout}</td>
+                </tr>
+                <tr style="background-color: #f9f9f9;">
+                    <td style="border: 1px solid #ddd; padding: 8px;">Room Name</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">${roomName}</td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #ddd; padding: 8px;">Total Price</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">${totalPrice}</td>
+                </tr>
+                <tr style="background-color: #f9f9f9;">
+                    <td style="border: 1px solid #ddd; padding: 8px;">Additional Notes</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">${notes || 'N/A'}</td>
+                </tr>
+            </table>
+            <p style="color: #555;">Please review the booking and contact the customer if necessary.</p>
+        </div>`;
+
+        // Sending the email
+        await transporter.sendMail({
+            from: 'team@droshinn.com',
+            to: 'saqlain9696382@gmail.com', // Sending to the hotel team
+            subject: 'Customer Booking Request',
+            html: emailContent
+        });
+        console.log("Email sent");
+
+        res.json({ success: true, message: 'Booking email sent successfully.' });
+    } catch (error) {
+        console.error('Error sending email:', error);
+        res.status(500).json({ success: false, message: 'Error sending booking email.' });
+    }
+});
+
+
+
 
 // Add Room Route
 app.post('/add-room', upload.array('images', 3), async (req, res) => {
@@ -215,7 +347,7 @@ app.get('/all-bookings', async (req, res) => {
 
     // Fetch all bookings from the "Bookings" collection
     const bookingsCollection = db.collection('Bookings');
-    const bookings = await bookingsCollection.find().toArray(); // Fetch all documents
+    const bookings = (await bookingsCollection.find().toArray()).reverse(); // Fetch all documents
 
     // Send the bookings as JSON
     res.status(200).json(bookings);

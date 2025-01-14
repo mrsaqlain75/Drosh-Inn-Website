@@ -155,9 +155,25 @@
     .delete-icon:hover {
       color: #c0392b;
     }
+    body.invisible {
+      display: none;
+    }
   </style>
 </head>
 <body>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const password = prompt("Please enter the password:");
+      if (password === "jawad") {
+        document.body.classList.remove("invisible"); // Show the page
+      } else {
+        alert("Incorrect password. Please refresh the page to try again.");
+        document.querySelector('body').style.display = "none";
+      }
+    });
+  </script>
+
+
   <div class="dashboard-container">
     <!-- Sidebar -->
     <div class="sidebar">
@@ -184,6 +200,7 @@
   </div>
 </body>
 <script>
+
   document.getElementById('booking-container');
   // Redirect to Add Room page
   document.getElementById('addroom').addEventListener('click', () => {
