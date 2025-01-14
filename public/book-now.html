@@ -115,6 +115,8 @@
   
   <footer>
     <span>All Rights Reserved @Copyright Drosh Inn Guest House</span>
+    <hr>
+    <span>Developed by SADEVZ (sadevz.com)</span>
   </footer>
   
 <script>
@@ -213,14 +215,31 @@ form.addEventListener('submit', async function (event) {
         });
 
         if (response.ok) {
+            const name = data.name;
+            const email = data.email;
+            const phone = data.phone;
+            const checkin = data.checkin;
+            const checkout = data.checkout;
+            const roomName = data.roomName;
+            const notes = data.notes;
+            const totalPrice = data.totalPrice;
             const result = await response.json();
             alert(`Booking Successful! Booking ID: ${result.bookingId}`);
-            resetForm();  // Reset the form after successful submission
             document.getElementById('sub-btn').innerText="Submitted";
+            alert(name);
             const respons = await fetch('/email-to-jawad',{
                 method : 'POST',
                 headers : {'Content-Type':'application/json'},
-                body : JSON.stringify({data})
+                body : JSON.stringify({        
+                    name,
+                    email,
+                    phone,
+                    checkin,
+                    checkout,
+                    roomName,
+                    notes,
+                    totalPrice
+                })
             });
             const res = await respons.json();
             if(res.success){
@@ -251,6 +270,8 @@ form.addEventListener('submit', async function (event) {
         console.error('Error submitting the form:', error);
         alert('An error occurred. Please try again later.');
     }
+    
+    resetForm();  // Reset the form after successful submission
 });
 
 // Event listener for calculating the price before submission
@@ -275,10 +296,6 @@ document.getElementById('calculate-price').addEventListener('click', function ()
     const totalPrice = nights * roomPrice;
     alert(`Total Price: PKR ${totalPrice}`);
 });
-
-
-
-
         } catch (error) {
             console.error('Error loading rooms:', error);
         }

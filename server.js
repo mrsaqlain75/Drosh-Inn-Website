@@ -7,7 +7,7 @@ const path = require('path');
 const nodemailer = require('nodemailer');
 
 const app = express();
-const port = process.env.PORT || 2500;
+const port = process.env.PORT || 3000;
 const url = "mongodb://localhost:27017/";
 
 // Ensure uploads directory exists
@@ -99,7 +99,7 @@ app.post('/email-to-jawad', async (req, res) => {
             },
             debug: true // Enable debug logs
         });
-
+console.log(name, email, phone);
         // Cool layout for the email content
         const emailContent = `
         <div style="font-family: Arial, sans-serif; line-height: 1.6;">
