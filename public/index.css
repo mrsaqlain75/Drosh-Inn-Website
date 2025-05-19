@@ -486,7 +486,9 @@ footer{
     .left-amenties{
         width: 95%;
         margin-top: 10px;
-        
+    }
+    .left-amenties span{
+        font-size: 18px;
     }
     .box{
         width: 40%;

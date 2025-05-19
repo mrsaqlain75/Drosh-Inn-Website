@@ -5,10 +5,11 @@ const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
 const nodemailer = require('nodemailer');
+require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 3000;
-const url = "mongodb://localhost:27017/";
+const url = process.env.DB_URI;
 
 // Ensure uploads directory exists
 const uploadDir = path.join(__dirname, 'uploads');

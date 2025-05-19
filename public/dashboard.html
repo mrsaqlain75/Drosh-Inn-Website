@@ -158,9 +158,70 @@
     body.invisible {
       display: none;
     }
+
+    
+    /* Loader Styles */
+    .loader-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      visibility: hidden;
+      opacity: 0;
+      transition: visibility 0s, opacity 0.3s ease-in-out;
+    }
+
+    .loader-container.active {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .cube-loader {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      perspective: 1000px;
+    }
+
+    .cube {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      transform-style: preserve-3d;
+      animation: rotate 2s infinite ease-in-out;
+    }
+
+    .cube div {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      background: rgba(52, 152, 219, 0.9);
+      border: 2px solid #3498db;
+    }
+
+    .cube .front  { transform: rotateY(0deg) translateZ(50px); }
+    .cube .back   { transform: rotateY(180deg) translateZ(50px); }
+    .cube .right  { transform: rotateY(90deg) translateZ(50px); }
+    .cube .left   { transform: rotateY(-90deg) translateZ(50px); }
+    .cube .top    { transform: rotateX(90deg) translateZ(50px); }
+    .cube .bottom { transform: rotateX(-90deg) translateZ(50px); }
+
+    @keyframes rotate {
+      0%, 100% { transform: rotateX(0deg) rotateY(0deg); }
+      25%      { transform: rotateX(90deg) rotateY(0deg); }
+      50%      { transform: rotateX(90deg) rotateY(90deg); }
+      75%      { transform: rotateX(0deg) rotateY(90deg); }
+    }
+
   </style>
 </head>
 <body>
+
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const password = prompt("Please enter the password:");
@@ -172,6 +233,19 @@
       }
     });
   </script>
+  <!-- Loader -->
+  <div class="loader-container" id="loader">
+    <div class="cube-loader">
+      <div class="cube">
+        <div class="front"></div>
+        <div class="back"></div>
+        <div class="right"></div>
+        <div class="left"></div>
+        <div class="top"></div>
+        <div class="bottom"></div>
+      </div>
+    </div>
+  </div>
 
 
   <div class="dashboard-container">
@@ -212,6 +286,8 @@
 
     async function loadRooms() {
       try {
+              // Show loader
+      loader.classList.add('active');
         const response = await fetch('/show-rooms');
         const rooms = await response.json();
         console.log(rooms);
@@ -235,6 +311,8 @@
     `
   )
   .join('');
+          // Hide loader
+          loader.classList.remove('active');
 
         // Add event listener to each status dropdown
         const statusDropdowns = document.querySelectorAll('.status-dropdown');
@@ -269,6 +347,8 @@
     // Function to update room status
     async function changeStatus(roomId, newStatus) {
       try {
+              // Show loader
+      loader.classList.add('active');
         const response = await fetch(`/update-status/${roomId}`, {
           method: 'PUT',
           headers: {
@@ -284,11 +364,17 @@
       } catch (error) {
         console.error('Error updating status:', error);
       }
+      finally{
+                // Hide loader
+                loader.classList.remove('active');
+      }
     }
 
     // Function to delete room
     async function deleteRoom(roomId) {
       try {
+                      // Show loader
+      loader.classList.add('active');
         const response = await fetch(`/delete-room/${roomId}`, {
           method: 'DELETE',
         });
@@ -299,6 +385,10 @@
         console.log('Room deleted successfully');
       } catch (error) {
         console.error('Error deleting room:', error);
+      }finally{
+
+        // Hide loader
+        loader.classList.remove('active');
       }
     }
   });
@@ -313,6 +403,8 @@
   });
   async function fetchBookings(){
     try {
+        // Show loader
+        loader.classList.add('active');
         const response = await fetch('/all-bookings');
         const bookings = await response.json();
 
@@ -345,6 +437,10 @@
       } catch (error) {
         console.error('Error fetching bookings:', error);
         alert('Error fetching bookings.');
+      } finally{
+        
+        // Hide loader
+        loader.classList.remove('active');
       }
 
   }
